@@ -5,13 +5,15 @@ class Company < Sequel::Model(:companies)
     res = []
     res = where(name: /#{name}/i) if name
     puts "In by_name dataset mod: res = #{res.inspect}"
-    # res.empty? ? [].to_json : collection_to_api(res)
     res.empty? ? [] : res
   end
 
-  def self.by_location(location)
-    puts 'In by_location dataset mod'
-    where(location: /#{location}/i) if location
+  def self.by_location(location, dt = nil)
+    res = []
+    res = where(location: /#{location}/i) if location && dt.nil?
+    res = dt.where(location: /#{location}/i) if location && !dt.nil?
+    puts "In by_location dataset mod: res = #{res.inspect}"
+    res.empty? ? [] : res
   end
 
   def self.company_jobs(name)

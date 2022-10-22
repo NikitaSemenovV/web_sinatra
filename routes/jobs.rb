@@ -1,22 +1,40 @@
 namespace '/api/v1' do
   get '/jobs' do
-    collection_to_api(DB[:jobs].all)
+    collection_to_api(Job.all)
   end
   get '/jobs/:id' do
-    collection_to_api(DB[:jobs].where({id: params[:id]}).all)
+    collection_to_api(Job.where({id: params[:id]}).all)
   end
   get '/jobs/:id/applies' do
-    collection_to_api(DB[:applies].where({job_id: params[:id]}).all)
+    collection_to_api(Apply.where({job_id: params[:id]}).all)
   end
   post '/jobs' do
-    id = DB[:jobs].insert(name: params[:name], place: params[:place], company_id: params[:company_id])
+    param :name, String, required: true
+    param :place, String, required: true
+    param :company_id, Integer, required: true
 
-    collection_to_api(DB[:jobs].where(:id => id).all)
+    job = Job.create({name: params[:name], place: params[:place], company_id: params[:company_id]})
+
+    job.values.to_json
   end
-  post '/jobs/:id' do
-    DB[:jobs].where(:id => params[:id]).update(name: params[:name], place: params[:place], company_id: params[:company_id])
+  put '/jobs/:id' do
+    param :name, String
+    param :place, String
+    param :company_id, Integer
+    one_of :name, :place, :company_id
 
-    collection_to_api(DB[:jobs].where(:id => params[:id]).all)
+    job = Job.where(:id => params[:id])
+    job.update(name: params[:name], place: params[:place], company_id: params[:company_id])
+
+    collection_to_api(job.all)
+  end
+
+  delete '/jobs/:id' do
+    job = Job.where(:id => params[:id]).first
+    res = job.values.to_json
+    job.delete
+
+    res
   end
 end
 

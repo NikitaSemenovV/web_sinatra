@@ -5,6 +5,7 @@ gem 'rack'
 gem 'rake'
 
 gem 'sinatra'
+gem "sinatra-param"
 gem 'sinatra-contrib'
 
 gem 'json'

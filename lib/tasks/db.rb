@@ -15,7 +15,6 @@ namespace :db do
   puts "connection_string = #{connection_string.inspect}"
 
   $db = Sequel.connect(connection_string)
-  Dir.glob("./models/*.rb", &method(:require))
   desc "Prints current schema version"
   task :version do
     puts "Sinatra::Application.settings = #{Sinatra::Application.settings.inspect}"
@@ -66,6 +65,7 @@ namespace :db do
     puts 'seed task running'
     Sequel::Seed.setup :development # Set the environment
     Sequel.extension :seed # Load the extension
+    Dir.glob("./models/*.rb", &method(:require))
     Sequel::Seeder.apply($db, './seeds') # Apply the seeds/fixtures
   end
 

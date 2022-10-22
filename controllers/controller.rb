@@ -3,5 +3,5 @@ before do
 end
 
 def collection_to_api(collection)         # For Array
-  JSON.dump(collection)
+  JSON.dump(collection.map(&:values))
 end
